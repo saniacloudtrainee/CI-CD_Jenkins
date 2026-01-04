@@ -40,12 +40,33 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            echo '✅ Build successful – tests passed'
-        }
-        failure {
-            echo '❌ Build failed – tests failed'
-        }
+  post {
+    success {
+        mail to: 'sania.cloudtech@gmail.com',
+             subject: "Jenkins SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+             body: """
+✅ Build SUCCESS
+
+Job: ${env.JOB_NAME}
+Build: #${env.BUILD_NUMBER}
+
+View details:
+${env.BUILD_URL}
+"""
+    }
+
+    failure {
+        mail to: 'sania.cloudtech@gmail.com',
+             subject: "Jenkins FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+             body: """
+❌ Build FAILED
+
+Job: ${env.JOB_NAME}
+Build: #${env.BUILD_NUMBER}
+
+Check logs:
+${env.BUILD_URL}
+"""
     }
 }
+
