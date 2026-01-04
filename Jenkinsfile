@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON_HOME = 'C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python311'
+        PATH = "${PYTHON_HOME};${PYTHON_HOME}\\Scripts;${env.PATH}"
+        PYTHONPATH = "${WORKSPACE}"
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
@@ -8,14 +14,9 @@ pipeline {
             }
         }
 
-        stage('Setup Python') {
+        stage('Verify Python') {
             steps {
-                bat '''
-                set PYTHON_HOME=C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python311
-                set PATH=%PYTHON_HOME%;%PYTHON_HOME%\\Scripts;%PATH%
-                set PYTHONPATH=%CD%
-                python --version
-                '''
+                bat 'python --version'
             }
         }
 
