@@ -45,12 +45,6 @@ pipeline {
             }
         }
    
-        stage('Docker Access Test') {
-            steps {
-                bat 'docker --version'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t jenkins-ci-demo .'
