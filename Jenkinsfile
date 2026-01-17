@@ -8,6 +8,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout Code') {
             steps {
                 checkout scm
@@ -38,33 +39,29 @@ pipeline {
                 '''
             }
         }
-        
-        stage('Docker Version Check') {
-            steps {
-                bat 'docker --version'
-            }
-        }
-   
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t jenkins-ci-demo .'
             }
         }
+
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-            credentialsId: 'dockerhub-creds',
-            usernameVariable: 'DOCKER_USER',
-            passwordVariable: 'DOCKER_PASS'
-        )]) {
-            bat """
-            docker login -u %DOCKER_USER% -p %DOCKER_PASS%
-            docker tag jenkins-ci-demo %DOCKER_USER%/ci-cd-demo:%BUILD_NUMBER%
-            docker push %DOCKER_USER%/ci-cd-demo:%BUILD_NUMBER%
-            """
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat '''
+                    docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+                    docker tag jenkins-ci-demo %DOCKER_USER%/ci-cd-demo:%BUILD_NUMBER%
+                    docker push %DOCKER_USER%/ci-cd-demo:%BUILD_NUMBER%
+                    '''
+                }
+            }
         }
     }
-}
 
     post {
         success {
@@ -74,9 +71,8 @@ pipeline {
 ✅ Build SUCCESS
 
 Job: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
+Build: ${env.BUILD_NUMBER}
 
-View details:
 ${env.BUILD_URL}
 """
         }
@@ -88,9 +84,8 @@ ${env.BUILD_URL}
 ❌ Build FAILED
 
 Job: ${env.JOB_NAME}
-Build Number: ${env.BUILD_NUMBER}
+Build: ${env.BUILD_NUMBER}
 
-Check logs:
 ${env.BUILD_URL}
 """
         }
