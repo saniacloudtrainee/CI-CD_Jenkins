@@ -50,7 +50,21 @@ pipeline {
                 bat 'docker build -t jenkins-ci-demo .'
             }
         }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-creds',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASS'
+        )]) {
+            bat """
+            docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+            docker tag jenkins-ci-demo %DOCKER_USER%/ci-cd-demo:%BUILD_NUMBER%
+            docker push %DOCKER_USER%/ci-cd-demo:%BUILD_NUMBER%
+            """
+        }
     }
+}
 
     post {
         success {
