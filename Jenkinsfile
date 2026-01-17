@@ -64,14 +64,12 @@ pipeline {
 
         stage('Deploy Container') {
             steps {
-               bat '''
-                    docker stop ci-cd-app || exit 0
-                    docker rm ci-cd-app || exit 0
-                    docker run -d --name ci-cd-app -p 5000:5000 sania5678/ci-cd-demo:%BUILD_NUMBER%
-        '''
+               bat 'docker stop ci-cd-app || exit 0'
+               bat 'docker rm ci-cd-app || exit 0'
+               bat 'docker run -d --name ci-cd-app -p 5000:5000 sania5678/ci-cd-demo:%BUILD_NUMBER%'
             }
-        }
-    }
+        } 
+   }
 
     post {
         success {
